@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sale_subscription_order_view_form" model="ir.ui.view">
+        <field name="name">sale.subscription.order.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale_management.sale_order_form_quote"/>
+        <field name="priority" eval="10"/>
+        <field name="arch" type="xml">
+            <field name="show_update_pricelist" position='before'>
+                <field name="subscription_template_id" readonly="state in ['sale', 'cancel']"/>
+                <field name="start_date" invisible="not subscription_template_id"/>
+            </field>
+            <xpath expr="//button[@id='create_invoice']" position="after">
+                <button id="create_invoice_subscription" name="%(sale.action_view_sale_advance_payment_inv)d" string="Create Invoice" type="action" context="{'default_advance_payment_method': 'percentage'}" data-hotkey="i" invisible="invoice_status != 'invoiced' or state != 'sale' or not subscription_template_id"/>
+            </xpath>
+            <xpath expr="//notebook/page[@name='order_lines']/field/tree/field[@name='name']" position='after'>
+                <field name="is_subscription" column_invisible="True"/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree/field[@name='price_subtotal']" position='attributes'>
+                <attribute name="decoration-info">is_subscription</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree/field[@name='price_total']" position='attributes'>
+                <attribute name="decoration-info">is_subscription</attribute>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
